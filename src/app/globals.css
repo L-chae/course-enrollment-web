@@ -1,26 +1,246 @@
-@import "tailwindcss";
+/**
+ * Design System v4 — globals.css
+ *
+ * Tailwind v4 기반. 모든 디자인 토큰은 @theme 블록에서 단일 관리합니다.
+ *
+ * ⚠️  --spacing-* 네이밍 금지
+ *     Tailwind v4에서 --spacing-{key} 는 spacing scale 전체를 덮어씁니다.
+ *     커스텀 간격 토큰은 반드시 --space-* 로 정의하세요.
+ * ⚠️  @apply 커스텀클래스 금지
+ *     v4에서 순환 참조 빌드 에러 발생
+ * ⚠️  bg-gradient-to-t 금지 → bg-linear-to-t 사용
+ */
 
+@import 'tailwindcss';
+
+/* ============================================================
+   1. DESIGN TOKENS (Light Mode Default)
+   ============================================================ */
+@theme {
+  /* --- Brand --- */
+  --color-brand-primary: #2563eb;
+  --color-brand-dark: #1d4ed8;
+  --color-brand-light: #eff6ff;
+
+  /* --- Semantic (상태 색상) --- */
+  --color-error: #ef4444;
+  --color-error-light: #fef2f2;
+  --color-success: #22c55e;
+  --color-success-light: #f0fdf4;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fffbeb;
+
+  /* --- Background (elevation 낮음 → 높음) --- */
+  --color-bg-sunken: #f1f5f9;
+  --color-bg-base: #f8fafc;
+  --color-bg-card: #ffffff;
+  --color-bg-inverse: #0f172a;
+  --color-bg-disabled: #f8fafc;
+
+  /* --- Text hierarchy --- */
+  --color-text-main: #0f172a;
+  --color-text-sub: #475569;
+  --color-text-mute: #94a3b8;
+  --color-text-inverse: #f8fafc;
+  --color-text-disabled: #cbd5e1;
+
+  /* --- Border --- */
+  --color-border-subtle: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+  --color-border-error: #ef4444;
+  --color-border-disabled: #e2e8f0;
+
+  /* --- Shadow --- */
+  --shadow-soft: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --shadow-elevated: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 10px 20px -4px rgba(15, 23, 42, 0.05);
+  --shadow-brand: 0 4px 14px 0 rgba(37, 99, 235, 0.3);
+
+  /* --- Border radius --- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* --- Transition --- */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+}
+
+/* ============================================================
+   2. 커스텀 간격 토큰 — --space-* (spacing scale 오염 방지)
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 48px;
+  --space-2xl: 80px;
+
+  --max-w-content: 1200px;
+  --h-gnb: 64px;
+  --top-sticky: 80px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ============================================================
+   3. DARK MODE
+   ============================================================ */
+@layer base {
+  .dark {
+    --color-bg-sunken: #1e293b;
+    --color-bg-base: #020617;
+    --color-bg-card: #0f172a;
+    --color-bg-inverse: #1e293b;
+    --color-bg-disabled: #1e293b;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-text-main: #f1f5f9;
+    --color-text-sub: #94a3b8;
+    --color-text-mute: #64748b;
+    --color-text-inverse: #f1f5f9;
+    --color-text-disabled: #475569;
+
+    --color-border-subtle: #1e293b;
+    --color-border-strong: #334155;
+    --color-border-error: #f87171;
+    --color-border-disabled: #1e293b;
+
+    --color-error: #f87171;
+    --color-error-light: #1c0a0a;
+    --color-success: #4ade80;
+    --color-success-light: #052e16;
+    --color-warning: #fbbf24;
+    --color-warning-light: #1c1400;
+
+    --shadow-soft: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    --shadow-elevated: 0 10px 25px -5px rgba(0, 0, 0, 0.45);
+    --shadow-brand: 0 4px 14px 0 rgba(37, 99, 235, 0.2);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================
+   4. BASE STYLES
+   ============================================================ */
+@layer base {
+  body {
+    @apply bg-bg-base text-text-main antialiased;
+    font-family: 'Pretendard', system-ui, sans-serif;
+    line-height: 1.6;
+    transition:
+      background-color var(--duration-normal) ease,
+      color var(--duration-normal) ease;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply text-text-main font-extrabold tracking-tight;
+    line-height: 1.25;
+  }
+
+  /* 접근성 — 키보드 포커스 */
+  *:focus {
+    outline: none;
+  }
+  *:focus-visible {
+    outline: 2px solid var(--color-brand-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* ============================================================
+   5. COMPONENT UTILITIES
+   ============================================================ */
+@layer utilities {
+  /* Layout */
+  .content-container {
+    max-width: var(--max-w-content);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+
+  /* Card */
+  .card {
+    @apply bg-bg-card border-border-subtle shadow-soft rounded-md border transition-all duration-300;
+  }
+
+  .card-interactive {
+    @apply bg-bg-card border-border-subtle shadow-soft rounded-md border transition-all duration-300;
+  }
+  .card-interactive:hover {
+    @apply shadow-elevated -translate-y-0.5;
+    border-color: color-mix(in srgb, var(--color-brand-primary) 25%, transparent);
+  }
+
+  /* Input — 상태별 분리 */
+  .input-standard {
+    @apply bg-bg-sunken text-text-main placeholder:text-text-mute w-full rounded-sm border border-transparent outline-none;
+    transition: all var(--duration-fast) ease;
+    padding: var(--space-sm) var(--space-md);
+  }
+  .input-standard:focus {
+    @apply bg-bg-card;
+    border-color: var(--color-brand-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+  .input-standard:disabled {
+    background-color: var(--color-bg-disabled);
+    color: var(--color-text-disabled);
+    border-color: var(--color-border-disabled);
+    cursor: not-allowed;
+  }
+  .input-error {
+    border-color: var(--color-border-error) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+  }
+
+  /* Typography */
+  .text-h1 {
+    @apply text-text-main text-4xl font-extrabold tracking-tighter;
+  }
+  .text-h2 {
+    @apply text-text-main text-2xl font-extrabold tracking-tight;
+  }
+  .text-h3 {
+    @apply text-text-main text-xl font-bold tracking-tight;
+  }
+  .text-body {
+    @apply text-text-main text-base;
+  }
+  .text-caption {
+    @apply text-text-sub text-sm;
+  }
+  .text-error {
+    @apply text-sm font-medium;
+    color: var(--color-error);
+  }
+  .text-success {
+    @apply text-sm font-medium;
+    color: var(--color-success);
+  }
+
+  /* Badge */
+  .badge-brand {
+    @apply bg-brand-light text-brand-primary inline-flex items-center rounded-sm text-xs font-bold tracking-wider uppercase;
+    padding: var(--space-xs) var(--space-sm);
+  }
+  .badge-error {
+    @apply inline-flex items-center rounded-sm text-xs font-bold tracking-wider uppercase;
+    background-color: var(--color-error-light);
+    color: var(--color-error);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  .badge-success {
+    @apply inline-flex items-center rounded-sm text-xs font-bold tracking-wider uppercase;
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  .badge-warning {
+    @apply inline-flex items-center rounded-sm text-xs font-bold tracking-wider uppercase;
+    background-color: var(--color-warning-light);
+    color: var(--color-warning);
+    padding: var(--space-xs) var(--space-sm);
+  }
 }
