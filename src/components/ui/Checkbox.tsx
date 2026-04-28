@@ -7,7 +7,7 @@ interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export default function Checkbox({ label, className = '', ...props }: CheckboxProps) {
   return (
     <label
-      className={`group flex cursor-pointer items-center select-none`}
+      className={`group flex cursor-pointer items-center select-none ${className}`}
       style={{ gap: 'var(--space-sm)' }}
     >
       <input type="checkbox" className="peer hidden" {...props} />
