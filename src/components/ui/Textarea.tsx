@@ -20,7 +20,7 @@ export default function Textarea({
       {label && <label className="text-text-sub text-sm font-bold">{label}</label>}
       <div className="relative">
         <textarea
-          className={`input-standard min-h-[120px] resize-none ${error ? 'input-error' : ''} ${className}`}
+          className={`input-standard min-h-30 resize-none ${error ? 'input-error' : ''} ${className}`}
           maxLength={maxLength}
           {...props}
         />
