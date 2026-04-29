@@ -13,9 +13,10 @@ const ENROLLMENT_RESULT_STORAGE_KEY = 'course-enrollment:result';
 
 export default function ConfirmPage() {
   const router = useRouter();
-  const { submit, isSubmitting } = useEnrollSubmit();
+  const { submit, isSubmitting, error } = useEnrollSubmit();
   const [enrollment, setEnrollment] = useState<EnrollmentRequest | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = sessionStorage.getItem(ENROLLMENT_DRAFT_STORAGE_KEY);
@@ -40,6 +41,7 @@ export default function ConfirmPage() {
     }
 
     try {
+      setSubmitErrorMessage(null);
       const result = await submit(enrollment);
 
       if (!result) {
@@ -49,8 +51,13 @@ export default function ConfirmPage() {
       sessionStorage.setItem(ENROLLMENT_RESULT_STORAGE_KEY, JSON.stringify(result));
       sessionStorage.removeItem(ENROLLMENT_DRAFT_STORAGE_KEY);
       router.push('/complete');
-    } catch {
-      alert('신청 제출에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+    } catch (submitError) {
+      const message =
+        submitError instanceof Error
+          ? submitError.message
+          : '신청 제출에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+
+      setSubmitErrorMessage(message);
     }
   };
 
@@ -89,6 +96,7 @@ export default function ConfirmPage() {
       </header>
 
       <ConfirmSummary enrollment={enrollment} />
+      {(submitErrorMessage || error?.message) && <p className="text-error">{submitErrorMessage ?? error?.message}</p>}
 
       <div className="flex justify-end gap-3">
         <Button type="button" variant="secondary" onClick={handleEdit} disabled={isSubmitting}>
