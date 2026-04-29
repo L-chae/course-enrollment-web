@@ -11,6 +11,7 @@ import ParticipantFields from '@/components/enrollment/ParticipantFields';
 import TermsAgreement from '@/components/enrollment/TermsAgreement';
 import Button from '@/components/ui/Button';
 import { useEnrollForm } from '@/hooks/useEnrollForm';
+import { useFormPersist } from '@/hooks/useFormPersist';
 import type { EnrollmentSchema } from '@/lib/schema';
 
 const ENROLLMENT_DRAFT_STORAGE_KEY = 'course-enrollment:draft';
@@ -29,7 +30,16 @@ export default function ApplyForm({ courseId }: ApplyFormProps) {
     formState: { errors },
     watch,
     setValue,
+    reset,
+    getValues,
   } = useEnrollForm();
+
+  useFormPersist({
+    courseId,
+    watch,
+    reset,
+    getValues,
+  });
 
   const {
     fields: participantFields,
