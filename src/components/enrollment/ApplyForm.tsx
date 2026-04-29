@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useFieldArray } from 'react-hook-form';
 
 import ApplicantFields from '@/components/enrollment/ApplicantFields';
 import EnrollmentTypeSelector from '@/components/enrollment/EnrollmentTypeSelector';
+import GroupFields from '@/components/enrollment/GroupFields';
+import ParticipantFields from '@/components/enrollment/ParticipantFields';
 import TermsAgreement from '@/components/enrollment/TermsAgreement';
 import Button from '@/components/ui/Button';
 import { useEnrollForm } from '@/hooks/useEnrollForm';
@@ -16,11 +19,21 @@ type ApplyFormProps = {
 export default function ApplyForm({ courseId }: ApplyFormProps) {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     watch,
     setValue,
   } = useEnrollForm();
+
+  const {
+    fields: participantFields,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: 'group.participants',
+  });
 
   const selectedType = watch('type') ?? 'personal';
 
@@ -28,8 +41,22 @@ export default function ApplyForm({ courseId }: ApplyFormProps) {
     setValue('courseId', courseId);
   }, [courseId, setValue]);
 
+  useEffect(() => {
+    if (selectedType !== 'group') {
+      return;
+    }
+
+    if (participantFields.length === 0) {
+      append({ name: '', email: '' });
+    }
+  }, [append, participantFields.length, selectedType]);
+
   const handleTypeChange = (type: EnrollmentSchema['type']) => {
     setValue('type', type);
+
+    if (type === 'group' && participantFields.length === 0) {
+      append({ name: '', email: '' });
+    }
   };
 
   const handleValidSubmit = (values: EnrollmentSchema) => {
@@ -42,9 +69,16 @@ export default function ApplyForm({ courseId }: ApplyFormProps) {
       <ApplicantFields register={register} errors={errors} />
 
       {selectedType === 'group' && (
-        <div className="course-list-empty text-left">
-          단체 정보와 참가자 명단 입력은 다음 단계에서 연결됩니다.
-        </div>
+        <>
+          <GroupFields register={register} errors={errors} />
+          <ParticipantFields
+            fields={participantFields}
+            register={register}
+            errors={errors}
+            append={append}
+            remove={remove}
+          />
+        </>
       )}
 
       <TermsAgreement register={register} error={errors.agreedToTerms?.message as string | undefined} />
