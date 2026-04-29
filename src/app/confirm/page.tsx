@@ -5,16 +5,17 @@ import { useRouter } from 'next/navigation';
 
 import ConfirmSummary from '@/components/enrollment/ConfirmSummary';
 import Button from '@/components/ui/Button';
-import type { EnrollmentRequest, EnrollmentResponse } from '@/types/enrollment';
+import { useEnrollSubmit } from '@/hooks/useEnrollSubmit';
+import type { EnrollmentRequest } from '@/types/enrollment';
 
 const ENROLLMENT_DRAFT_STORAGE_KEY = 'course-enrollment:draft';
 const ENROLLMENT_RESULT_STORAGE_KEY = 'course-enrollment:result';
 
 export default function ConfirmPage() {
   const router = useRouter();
+  const { submit, isSubmitting } = useEnrollSubmit();
   const [enrollment, setEnrollment] = useState<EnrollmentRequest | null>(null);
   const [isReady, setIsReady] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const stored = sessionStorage.getItem(ENROLLMENT_DRAFT_STORAGE_KEY);
@@ -38,30 +39,18 @@ export default function ConfirmPage() {
       return;
     }
 
-    setIsSubmitting(true);
-
     try {
-      const response = await fetch('/api/enrollments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(enrollment),
-      });
+      const result = await submit(enrollment);
 
-      if (!response.ok) {
-        alert('신청 제출에 실패했습니다. 잠시 후 다시 시도해 주세요.');
-        setIsSubmitting(false);
+      if (!result) {
         return;
       }
 
-      const result = (await response.json()) as EnrollmentResponse;
       sessionStorage.setItem(ENROLLMENT_RESULT_STORAGE_KEY, JSON.stringify(result));
       sessionStorage.removeItem(ENROLLMENT_DRAFT_STORAGE_KEY);
       router.push('/complete');
     } catch {
       alert('신청 제출에 실패했습니다. 잠시 후 다시 시도해 주세요.');
-      setIsSubmitting(false);
     }
   };
 
