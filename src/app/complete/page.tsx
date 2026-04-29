@@ -14,20 +14,38 @@ export default function CompletePage() {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem(ENROLLMENT_RESULT_STORAGE_KEY);
+    let isActive = true;
 
-    if (!stored) {
-      setIsReady(true);
-      return;
-    }
+    queueMicrotask(() => {
+      if (!isActive) {
+        return;
+      }
 
-    try {
-      setResult(JSON.parse(stored) as EnrollmentResponse);
-    } catch {
-      sessionStorage.removeItem(ENROLLMENT_RESULT_STORAGE_KEY);
-    } finally {
-      setIsReady(true);
-    }
+      const stored = sessionStorage.getItem(ENROLLMENT_RESULT_STORAGE_KEY);
+
+      if (!stored) {
+        if (isActive) {
+          setIsReady(true);
+        }
+        return;
+      }
+
+      try {
+        if (isActive) {
+          setResult(JSON.parse(stored) as EnrollmentResponse);
+        }
+      } catch {
+        sessionStorage.removeItem(ENROLLMENT_RESULT_STORAGE_KEY);
+      } finally {
+        if (isActive) {
+          setIsReady(true);
+        }
+      }
+    });
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   const handleGoToCourses = () => {

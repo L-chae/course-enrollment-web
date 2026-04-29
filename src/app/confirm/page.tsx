@@ -19,20 +19,38 @@ export default function ConfirmPage() {
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem(ENROLLMENT_DRAFT_STORAGE_KEY);
+    let isActive = true;
 
-    if (!stored) {
-      setIsReady(true);
-      return;
-    }
+    queueMicrotask(() => {
+      if (!isActive) {
+        return;
+      }
 
-    try {
-      setEnrollment(JSON.parse(stored) as EnrollmentRequest);
-    } catch {
-      sessionStorage.removeItem(ENROLLMENT_DRAFT_STORAGE_KEY);
-    } finally {
-      setIsReady(true);
-    }
+      const stored = sessionStorage.getItem(ENROLLMENT_DRAFT_STORAGE_KEY);
+
+      if (!stored) {
+        if (isActive) {
+          setIsReady(true);
+        }
+        return;
+      }
+
+      try {
+        if (isActive) {
+          setEnrollment(JSON.parse(stored) as EnrollmentRequest);
+        }
+      } catch {
+        sessionStorage.removeItem(ENROLLMENT_DRAFT_STORAGE_KEY);
+      } finally {
+        if (isActive) {
+          setIsReady(true);
+        }
+      }
+    });
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   const handleSubmit = async () => {
