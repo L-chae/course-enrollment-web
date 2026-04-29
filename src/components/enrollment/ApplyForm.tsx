@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFieldArray } from 'react-hook-form';
 
@@ -10,6 +10,7 @@ import GroupFields from '@/components/enrollment/GroupFields';
 import ParticipantFields from '@/components/enrollment/ParticipantFields';
 import TermsAgreement from '@/components/enrollment/TermsAgreement';
 import Button from '@/components/ui/Button';
+import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import { useEnrollForm } from '@/hooks/useEnrollForm';
 import { useFormPersist } from '@/hooks/useFormPersist';
 import type { EnrollmentSchema } from '@/lib/schema';
@@ -22,12 +23,13 @@ type ApplyFormProps = {
 
 export default function ApplyForm({ courseId }: ApplyFormProps) {
   const router = useRouter();
+  const [isLeavingSafely, setIsLeavingSafely] = useState(false);
 
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     watch,
     setValue,
     reset,
@@ -39,6 +41,10 @@ export default function ApplyForm({ courseId }: ApplyFormProps) {
     watch,
     reset,
     getValues,
+  });
+
+  useBeforeUnload({
+    enabled: isDirty && !isLeavingSafely,
   });
 
   const {
@@ -75,6 +81,7 @@ export default function ApplyForm({ courseId }: ApplyFormProps) {
   };
 
   const handleValidSubmit = (values: EnrollmentSchema) => {
+    setIsLeavingSafely(true);
     sessionStorage.setItem(ENROLLMENT_DRAFT_STORAGE_KEY, JSON.stringify(values));
     router.push('/confirm');
   };
