@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useFieldArray } from 'react-hook-form';
 
 import ApplicantFields from '@/components/enrollment/ApplicantFields';
@@ -12,11 +13,15 @@ import Button from '@/components/ui/Button';
 import { useEnrollForm } from '@/hooks/useEnrollForm';
 import type { EnrollmentSchema } from '@/lib/schema';
 
+const ENROLLMENT_DRAFT_STORAGE_KEY = 'course-enrollment:draft';
+
 type ApplyFormProps = {
   courseId: string;
 };
 
 export default function ApplyForm({ courseId }: ApplyFormProps) {
+  const router = useRouter();
+
   const {
     register,
     control,
@@ -60,7 +65,8 @@ export default function ApplyForm({ courseId }: ApplyFormProps) {
   };
 
   const handleValidSubmit = (values: EnrollmentSchema) => {
-    console.log(values);
+    sessionStorage.setItem(ENROLLMENT_DRAFT_STORAGE_KEY, JSON.stringify(values));
+    router.push('/confirm');
   };
 
   return (
