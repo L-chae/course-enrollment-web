@@ -11,6 +11,7 @@ const CATEGORY_OPTIONS: Array<{ value: CourseFilterCategory; label: string }> = 
   { value: 'all', label: '전체' },
   { value: 'development', label: '개발' },
   { value: 'design', label: '디자인' },
+  { value: 'marketing', label: '마케팅' },
   { value: 'business', label: '비즈니스' },
 ];
 
