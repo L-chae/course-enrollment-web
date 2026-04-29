@@ -29,6 +29,32 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
     );
   }
 
+  const isFull = selectedCourse.currentEnrollment >= selectedCourse.maxCapacity;
+
+  if (isFull) {
+    return (
+      <main className="content-container enrollment-page">
+        <section className="course-list-empty">
+          <p className="text-h3">모집이 마감된 강좌입니다.</p>
+          <p className="text-caption" style={{ marginTop: 'var(--space-sm)' }}>
+            현재 선택한 강좌는 정원이 모두 찼습니다. 다른 강좌를 선택해 주세요.
+          </p>
+          <div className="mt-4 flex flex-col gap-2">
+            <Link
+              href={`/enrollment/${selectedCourse.id}`}
+              className="text-brand-primary inline-block text-sm font-bold"
+            >
+              강좌 상세로 돌아가기
+            </Link>
+            <Link href="/enrollment" className="text-brand-primary inline-block text-sm font-bold">
+              강좌 목록으로 돌아가기
+            </Link>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="content-container enrollment-page">
       <header className="enrollment-header">
