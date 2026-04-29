@@ -1,36 +1,33 @@
-'use client';
+import Link from 'next/link';
 
-import { useEffect } from 'react';
+import ApplyForm from '@/components/enrollment/ApplyForm';
+import { MOCK_COURSES } from '@/mocks/courses';
 
-import ApplicantFields from '@/components/enrollment/ApplicantFields';
-import EnrollmentTypeSelector from '@/components/enrollment/EnrollmentTypeSelector';
-import TermsAgreement from '@/components/enrollment/TermsAgreement';
-import Button from '@/components/ui/Button';
-import { useEnrollForm } from '@/hooks/useEnrollForm';
-import type { EnrollmentSchema } from '@/lib/schema';
+type ApplyPageProps = {
+  searchParams: Promise<{
+    courseId?: string;
+  }>;
+};
 
-export default function ApplyPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
-  } = useEnrollForm();
+export default async function ApplyPage({ searchParams }: ApplyPageProps) {
+  const { courseId } = await searchParams;
+  const selectedCourse = MOCK_COURSES.find((course) => course.id === courseId);
 
-  const selectedType = watch('type') ?? 'personal';
-
-  useEffect(() => {
-    setValue('courseId', 'crs-001');
-  }, [setValue]);
-
-  const handleTypeChange = (type: EnrollmentSchema['type']) => {
-    setValue('type', type);
-  };
-
-  const handleValidSubmit = (values: EnrollmentSchema) => {
-    console.log(values);
-  };
+  if (!selectedCourse) {
+    return (
+      <main className="content-container enrollment-page">
+        <section className="course-list-empty">
+          <p className="text-h3">선택된 강좌가 없습니다.</p>
+          <p className="text-caption" style={{ marginTop: 'var(--space-sm)' }}>
+            강좌 목록에서 신청할 강좌를 먼저 선택해 주세요.
+          </p>
+          <Link href="/enrollment" className="text-brand-primary mt-4 inline-block text-sm font-bold">
+            강좌 목록으로 돌아가기
+          </Link>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="content-container enrollment-page">
@@ -39,22 +36,13 @@ export default function ApplyPage() {
         <p className="text-caption">신청 유형과 기본 정보를 입력해 주세요.</p>
       </header>
 
-      <form className="card flex flex-col gap-6 p-6" onSubmit={handleSubmit(handleValidSubmit)}>
-        <EnrollmentTypeSelector value={selectedType} onChange={handleTypeChange} />
-        <ApplicantFields register={register} errors={errors} />
+      <section className="card mb-6 p-6">
+        <p className="text-caption">선택 강좌</p>
+        <h2 className="text-h3">{selectedCourse.title}</h2>
+        <p className="text-caption">강사 {selectedCourse.instructor}</p>
+      </section>
 
-        {selectedType === 'group' && (
-          <div className="course-list-empty text-left">
-            단체 정보와 참가자 명단 입력은 다음 단계에서 연결됩니다.
-          </div>
-        )}
-
-        <TermsAgreement register={register} error={errors.agreedToTerms?.message as string | undefined} />
-
-        <div className="flex justify-end">
-          <Button type="submit">다음 단계로</Button>
-        </div>
-      </form>
+      <ApplyForm courseId={selectedCourse.id} />
     </main>
   );
 }
