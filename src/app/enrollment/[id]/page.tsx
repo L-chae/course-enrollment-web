@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import CourseDetail from '@/components/course/CourseDetail';
-import { MOCK_COURSES } from '@/mocks/courses';
+import { getCourseById } from '@/lib/courseApi';
 
 type CourseDetailPageProps = {
   params: Promise<{
@@ -11,7 +11,7 @@ type CourseDetailPageProps = {
 
 export default async function CourseDetailPage({ params }: CourseDetailPageProps) {
   const { id } = await params;
-  const course = MOCK_COURSES.find((item) => item.id === id);
+  const course = await getCourseById(id);
 
   if (!course) {
     notFound();

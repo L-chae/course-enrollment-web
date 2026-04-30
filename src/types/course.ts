@@ -1,4 +1,5 @@
 export type Category = 'development' | 'design' | 'marketing' | 'business';
+export type CourseFilterCategory = 'all' | Category;
 
 export interface Course {
   id: string;
@@ -16,4 +17,12 @@ export interface Course {
 export interface CourseListResponse {
   courses: Course[];
   categories: string[];
+  pagination: CoursePagination;
+}
+
+export interface CoursePagination {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
 }

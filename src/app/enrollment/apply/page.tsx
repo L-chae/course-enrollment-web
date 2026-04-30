@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import ApplyForm from '@/components/enrollment/ApplyForm';
-import { MOCK_COURSES } from '@/mocks/courses';
+import { getCourseById } from '@/lib/courseApi';
 
 type ApplyPageProps = {
   searchParams: Promise<{
@@ -11,7 +11,7 @@ type ApplyPageProps = {
 
 export default async function ApplyPage({ searchParams }: ApplyPageProps) {
   const { courseId } = await searchParams;
-  const selectedCourse = MOCK_COURSES.find((course) => course.id === courseId);
+  const selectedCourse = courseId ? await getCourseById(courseId) : null;
 
   if (!selectedCourse) {
     return (
