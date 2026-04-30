@@ -3,6 +3,7 @@ import type { FieldErrors, UseFormRegister } from 'react-hook-form';
 import type { EnrollmentSchema } from '@/lib/schema';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
+import { FORM_LIMITS } from '@/constants';
 
 type ApplicantFieldsProps = {
   register: UseFormRegister<EnrollmentSchema>;
@@ -41,7 +42,7 @@ export default function ApplicantFields({ register, errors }: ApplicantFieldsPro
 
       <Textarea
         label="수강동기"
-        maxLength={300}
+        maxLength={FORM_LIMITS.motivationMaxLength}
         {...register('applicant.motivation')}
         error={errors.applicant?.motivation?.message as string | undefined}
       />

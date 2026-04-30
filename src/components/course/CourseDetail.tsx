@@ -1,23 +1,11 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 
 import type { Course } from '@/types/course';
+import { CATEGORY_LABELS } from '@/constants';
+import { formatCourseDetailDate } from '@/lib/formatDate';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import CourseCapacityBadge from './CourseCapacityBadge';
-
-const CATEGORY_LABELS: Record<Course['category'], string> = {
-  development: '개발',
-  design: '디자인',
-  marketing: '마케팅',
-  business: '비즈니스',
-};
-
-const formatCourseDate = (isoDate: string) =>
-  new Date(isoDate).toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-  });
 
 type CourseDetailProps = {
   course: Course;
@@ -42,7 +30,7 @@ export default function CourseDetail({ course }: CourseDetailProps) {
       <div className="grid gap-2">
         <p className="course-instructor">강사 {course.instructor}</p>
         <p className="course-capacity-text">
-          기간 {formatCourseDate(course.startDate)} ~ {formatCourseDate(course.endDate)}
+          기간 {formatCourseDetailDate(course.startDate)} ~ {formatCourseDetailDate(course.endDate)}
         </p>
         <p className="course-capacity-text">
           정원 {course.currentEnrollment}/{course.maxCapacity}명

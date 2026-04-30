@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
 import type { UseFormGetValues, UseFormReset, UseFormWatch } from 'react-hook-form';
 
+import { FORM_PERSIST_STORAGE_PREFIX } from '@/constants';
 import type { EnrollmentSchema } from '@/lib/schema';
-
-const FORM_PERSIST_STORAGE_PREFIX = 'course-enrollment:form';
 
 type UseFormPersistParams = {
   courseId: string;

@@ -2,21 +2,14 @@
 import Link from 'next/link';
 
 import type { Course } from '@/types/course';
+import { CATEGORY_LABELS } from '@/constants';
+import { formatCourseCardDate } from '@/lib/formatDate';
 
 import CourseCapacityBadge from './CourseCapacityBadge';
-
-const CATEGORY_LABELS: Record<Course['category'], string> = {
-  development: '개발',
-  design: '디자인',
-  marketing: '마케팅',
-  business: '비즈니스',
-};
 
 type CourseCardProps = {
   course: Course;
 };
-
-const formatCourseDate = (isoDate: string) => new Date(isoDate).toLocaleDateString('ko-KR');
 
 export default function CourseCard({ course }: CourseCardProps) {
   const imageUrl = `https://picsum.photos/seed/${course.id}/640/360`;
@@ -43,7 +36,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         <div className="flex flex-col gap-1">
           <p className="course-instructor">강사 {course.instructor}</p>
           <p className="course-capacity-text">
-            기간 {formatCourseDate(course.startDate)} ~ {formatCourseDate(course.endDate)}
+            기간 {formatCourseCardDate(course.startDate)} ~ {formatCourseCardDate(course.endDate)}
           </p>
         </div>
 

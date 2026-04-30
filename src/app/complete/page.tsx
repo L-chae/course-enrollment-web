@@ -4,9 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import Button from '@/components/ui/Button';
+import { ENROLLMENT_RESULT_STORAGE_KEY } from '@/constants';
 import type { EnrollmentResponse } from '@/types/enrollment';
-
-const ENROLLMENT_RESULT_STORAGE_KEY = 'course-enrollment:result';
 
 export default function CompletePage() {
   const router = useRouter();

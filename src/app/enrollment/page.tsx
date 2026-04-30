@@ -5,9 +5,8 @@ import { useState } from 'react';
 import CategoryFilter from '@/components/course/CategoryFilter';
 import CourseList, { type CourseFilterCategory } from '@/components/course/CourseList';
 import Pagination from '@/components/ui/Pagination';
+import { COURSES_PER_PAGE } from '@/constants';
 import { useCourses } from '@/hooks/useCourses';
-
-const ITEMS_PER_PAGE = 6;
 
 export default function EnrollmentPage() {
   const [selectedCategory, setSelectedCategory] = useState<CourseFilterCategory>('all');
@@ -15,7 +14,7 @@ export default function EnrollmentPage() {
   const { data, isLoading, error } = useCourses({
     category: selectedCategory,
     page: currentPage,
-    limit: ITEMS_PER_PAGE,
+    limit: COURSES_PER_PAGE,
   });
   const courses = data?.courses ?? [];
   const totalPages = data?.pagination.totalPages ?? 0;

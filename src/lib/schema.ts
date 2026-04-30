@@ -1,9 +1,12 @@
 import { z } from 'zod';
-
-const phoneRegex = /^(01[016789]-?\d{3,4}-?\d{4}|0\d{1,2}-?\d{3,4}-?\d{4})$/;
+import { FORM_LIMITS, PHONE_REGEX } from '@/constants';
 
 export const applicantSchema = z.object({
-  name: z.string().trim().min(2, '이름은 2자 이상 입력해 주세요.').max(20),
+  name: z
+    .string()
+    .trim()
+    .min(FORM_LIMITS.applicantNameMinLength, '이름은 2자 이상 입력해 주세요.')
+    .max(FORM_LIMITS.applicantNameMaxLength),
   email: z
     .string()
     .trim()
@@ -13,21 +16,29 @@ export const applicantSchema = z.object({
     .string()
     .trim()
     .min(1, '전화번호를 입력해 주세요.')
-    .regex(phoneRegex, '형식이 올바르지 않습니다.'),
-  motivation: z.string().max(300, '300자 이하로 입력해 주세요.').optional().or(z.literal('')),
+    .regex(PHONE_REGEX, '형식이 올바르지 않습니다.'),
+  motivation: z
+    .string()
+    .max(FORM_LIMITS.motivationMaxLength, '300자 이하로 입력해 주세요.')
+    .optional()
+    .or(z.literal('')),
 });
 
 export const groupSchema = z
   .object({
     organizationName: z.string().trim().min(1, '단체명을 입력해 주세요.'),
-    headCount: z.number().int().min(2, '최소 2명부터 가능합니다.').max(10),
+    headCount: z
+      .number()
+      .int()
+      .min(FORM_LIMITS.groupMinHeadCount, '최소 2명부터 가능합니다.')
+      .max(FORM_LIMITS.groupMaxHeadCount),
     participants: z.array(
       z.object({
         name: z.string().trim().min(1, '이름을 입력해 주세요.'),
         email: z.string().trim().email('올바르지 않은 이메일입니다.'),
       }),
     ),
-    contactPerson: z.string().trim().regex(phoneRegex, '형식이 올바르지 않습니다.'),
+    contactPerson: z.string().trim().regex(PHONE_REGEX, '형식이 올바르지 않습니다.'),
   })
   .superRefine((group, ctx) => {
     if (group.participants.length !== group.headCount) {

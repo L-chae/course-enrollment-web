@@ -1,5 +1,7 @@
 ﻿'use client';
 
+import { COURSE_FILTER_CATEGORIES, COURSE_FILTER_LABELS } from '@/constants';
+
 import type { CourseFilterCategory } from './CourseList';
 
 type CategoryFilterProps = {
@@ -7,13 +9,11 @@ type CategoryFilterProps = {
   onChange: (category: CourseFilterCategory) => void;
 };
 
-const CATEGORY_OPTIONS: Array<{ value: CourseFilterCategory; label: string }> = [
-  { value: 'all', label: '전체' },
-  { value: 'development', label: '개발' },
-  { value: 'design', label: '디자인' },
-  { value: 'marketing', label: '마케팅' },
-  { value: 'business', label: '비즈니스' },
-];
+const CATEGORY_OPTIONS: Array<{ value: CourseFilterCategory; label: string }> =
+  COURSE_FILTER_CATEGORIES.map((value) => ({
+    value,
+    label: COURSE_FILTER_LABELS[value],
+  }));
 
 export default function CategoryFilter({ selectedCategory, onChange }: CategoryFilterProps) {
   return (
