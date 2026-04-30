@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
+import Providers from '@/app/providers';
 
 import './globals.css';
 
@@ -20,7 +21,9 @@ export default function RootLayout({
       <body className="bg-bg-base text-text-main antialiased">
         <div className="flex min-h-screen flex-col">
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1">
+            <Providers>{children}</Providers>
+          </main>
           <Footer />
         </div>
       </body>

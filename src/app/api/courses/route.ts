@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
+
 import { MOCK_COURSES } from '@/mocks/courses';
+import type { CourseListResponse } from '@/types/course';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -10,9 +12,12 @@ export async function GET(request: Request) {
   const limit = parseInt(searchParams.get('limit') || '6'); // 한 페이지당 6개
 
   // 2. 카테고리 필터링
-  const filtered =
-    category && category !== 'All'
-      ? MOCK_COURSES.filter((c) => c.category === category)
+  const normalizedCategory = category?.toLowerCase();
+  const isAllCategory = normalizedCategory === 'all';
+  const filtered = isAllCategory
+    ? MOCK_COURSES
+    : category
+      ? MOCK_COURSES.filter((course) => course.category === category)
       : MOCK_COURSES;
 
   // 3. 페이지네이션 계산
@@ -21,7 +26,7 @@ export async function GET(request: Request) {
   const startIndex = (page - 1) * limit;
   const paginatedCourses = filtered.slice(startIndex, startIndex + limit);
 
-  return NextResponse.json({
+  const response: CourseListResponse = {
     courses: paginatedCourses,
     categories: ['development', 'design', 'marketing', 'business'],
     pagination: {
@@ -30,5 +35,7 @@ export async function GET(request: Request) {
       totalItems,
       itemsPerPage: limit,
     },
-  });
+  };
+
+  return NextResponse.json(response);
 }

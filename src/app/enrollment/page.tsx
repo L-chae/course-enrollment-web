@@ -5,22 +5,20 @@ import { useState } from 'react';
 import CategoryFilter from '@/components/course/CategoryFilter';
 import CourseList, { type CourseFilterCategory } from '@/components/course/CourseList';
 import Pagination from '@/components/ui/Pagination';
-import { MOCK_COURSES } from '@/mocks/courses';
+import { useCourses } from '@/hooks/useCourses';
 
 const ITEMS_PER_PAGE = 6;
 
 export default function EnrollmentPage() {
   const [selectedCategory, setSelectedCategory] = useState<CourseFilterCategory>('all');
   const [currentPage, setCurrentPage] = useState(1);
-
-  const filteredCourses =
-    selectedCategory === 'all'
-      ? MOCK_COURSES
-      : MOCK_COURSES.filter((course) => course.category === selectedCategory);
-
-  const totalPages = Math.ceil(filteredCourses.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedCourses = filteredCourses.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const { data, isLoading, error } = useCourses({
+    category: selectedCategory,
+    page: currentPage,
+    limit: ITEMS_PER_PAGE,
+  });
+  const courses = data?.courses ?? [];
+  const totalPages = data?.pagination.totalPages ?? 0;
 
   const handleCategoryChange = (category: CourseFilterCategory) => {
     setSelectedCategory(category);
@@ -40,7 +38,9 @@ export default function EnrollmentPage() {
       </header>
 
       <CategoryFilter selectedCategory={selectedCategory} onChange={handleCategoryChange} />
-      <CourseList courses={paginatedCourses} />
+      {isLoading ? <p className="course-list-empty">강좌 목록을 불러오는 중입니다.</p> : null}
+      {error ? <p className="course-list-empty">강좌 목록 조회에 실패했습니다.</p> : null}
+      {!isLoading && !error ? <CourseList courses={courses} /> : null}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
