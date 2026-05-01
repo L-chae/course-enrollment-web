@@ -1,5 +1,9 @@
 import { getEnrollmentErrorMessage } from '@/lib/errorMessage';
-import type { EnrollmentRequest, EnrollmentResponse } from '@/types/enrollment';
+import type {
+  EnrollmentDuplicateCheckResponse,
+  EnrollmentRequest,
+  EnrollmentResponse,
+} from '@/types/enrollment';
 
 type EnrollmentErrorResponse = {
   code?: string;
@@ -28,4 +32,26 @@ export async function submitEnrollment(enrollment: EnrollmentRequest): Promise<E
   }
 
   return (await response.json()) as EnrollmentResponse;
+}
+
+type DuplicateCheckParams = {
+  courseId: string;
+  email: string;
+};
+
+export async function checkEnrollmentDuplicate({
+  courseId,
+  email,
+}: DuplicateCheckParams): Promise<EnrollmentDuplicateCheckResponse> {
+  const searchParams = new URLSearchParams({
+    courseId,
+    email,
+  });
+  const response = await fetch(`/api/enrollments/check?${searchParams.toString()}`);
+
+  if (!response.ok) {
+    throw new Error('중복 신청 여부를 확인하지 못했습니다.');
+  }
+
+  return (await response.json()) as EnrollmentDuplicateCheckResponse;
 }
