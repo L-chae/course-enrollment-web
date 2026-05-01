@@ -10,7 +10,14 @@ export function useEnrollForm() {
     resolver: zodResolver(enrollmentSchema),
     mode: 'onBlur',
     defaultValues: {
+      courseId: '',
       type: 'personal',
+      applicant: {
+        name: '',
+        email: '',
+        phone: '',
+        motivation: '',
+      },
       // 체크박스의 기본값은 false여야 검증이 작동합니다
       agreedToTerms: false as unknown as true,
     },

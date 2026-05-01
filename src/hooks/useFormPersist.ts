@@ -11,6 +11,20 @@ type UseFormPersistParams = {
   getValues: UseFormGetValues<EnrollmentSchema>;
 };
 
+function getDefaultValues(courseId: string): EnrollmentSchema {
+  return {
+    courseId,
+    type: 'personal',
+    applicant: {
+      name: '',
+      email: '',
+      phone: '',
+      motivation: '',
+    },
+    agreedToTerms: false as unknown as true,
+  };
+}
+
 export function useFormPersist({ courseId, watch, reset, getValues }: UseFormPersistParams) {
   const isInitializedRef = useRef(false);
   const storageKey = useMemo(() => `${FORM_PERSIST_STORAGE_PREFIX}:${courseId}`, [courseId]);
@@ -19,18 +33,26 @@ export function useFormPersist({ courseId, watch, reset, getValues }: UseFormPer
     const stored = localStorage.getItem(storageKey);
 
     if (!stored) {
+      reset(getDefaultValues(courseId));
       isInitializedRef.current = true;
       return;
     }
 
     try {
       const parsed = JSON.parse(stored) as EnrollmentSchema;
+      if (parsed.courseId !== courseId) {
+        localStorage.removeItem(storageKey);
+        reset(getDefaultValues(courseId));
+        return;
+      }
+
       reset({
         ...parsed,
         courseId,
       });
     } catch {
       localStorage.removeItem(storageKey);
+      reset(getDefaultValues(courseId));
     } finally {
       isInitializedRef.current = true;
     }

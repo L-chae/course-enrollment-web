@@ -6,12 +6,14 @@ import { getCourseById } from '@/lib/courseApi';
 type ApplyPageProps = {
   searchParams: Promise<{
     courseId?: string;
+    mock?: string;
   }>;
 };
 
 export default async function ApplyPage({ searchParams }: ApplyPageProps) {
-  const { courseId } = await searchParams;
+  const { courseId, mock } = await searchParams;
   const selectedCourse = courseId ? await getCourseById(courseId) : null;
+  const isMockMode = process.env.NODE_ENV === 'development' && mock === '1';
 
   if (!selectedCourse) {
     return (
@@ -68,7 +70,14 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
         <p className="text-caption">강사 {selectedCourse.instructor}</p>
       </section>
 
-      <ApplyForm courseId={selectedCourse.id} />
+      <ApplyForm
+        courseId={selectedCourse.id}
+        title={selectedCourse.title}
+        price={selectedCourse.price}
+        maxCapacity={selectedCourse.maxCapacity}
+        currentEnrollment={selectedCourse.currentEnrollment}
+        isMockMode={isMockMode}
+      />
     </main>
   );
 }

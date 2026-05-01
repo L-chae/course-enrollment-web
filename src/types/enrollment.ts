@@ -36,3 +36,8 @@ export interface EnrollmentResponse {
   enrollmentId: string;
   message: string;
 }
+
+export interface EnrollmentDuplicateCheckResponse {
+  duplicated: boolean;
+  message?: string;
+}

@@ -12,40 +12,42 @@ type ApplicantFieldsProps = {
 
 export default function ApplicantFields({ register, errors }: ApplicantFieldsProps) {
   return (
-    <section className="card" style={{ padding: 'var(--space-md)' }}>
-      <h3 className="text-h3" style={{ marginBottom: 'var(--space-md)' }}>
-        신청자 정보
-      </h3>
+    <section className="card flex flex-col gap-4 p-5">
+      <h3 className="text-h3">신청자 정보</h3>
 
-      <Input
-        label="이름"
-        required
-        {...register('applicant.name')}
-        error={errors.applicant?.name?.message as string | undefined}
-      />
+      <div className="grid gap-4 md:grid-cols-2">
+        <Input
+          label="이름"
+          required
+          {...register('applicant.name')}
+          error={errors.applicant?.name?.message as string | undefined}
+        />
 
-      <Input
-        label="이메일"
-        type="email"
-        required
-        {...register('applicant.email')}
-        error={errors.applicant?.email?.message as string | undefined}
-      />
+        <Input
+          label="이메일"
+          type="email"
+          required
+          {...register('applicant.email')}
+          error={errors.applicant?.email?.message as string | undefined}
+        />
 
-      <Input
-        label="연락처"
-        type="tel"
-        required
-        {...register('applicant.phone')}
-        error={errors.applicant?.phone?.message as string | undefined}
-      />
+        <Input
+          label="연락처"
+          type="tel"
+          required
+          {...register('applicant.phone')}
+          error={errors.applicant?.phone?.message as string | undefined}
+        />
 
-      <Textarea
-        label="수강동기"
-        maxLength={FORM_LIMITS.motivationMaxLength}
-        {...register('applicant.motivation')}
-        error={errors.applicant?.motivation?.message as string | undefined}
-      />
+        <div className="md:col-span-2">
+          <Textarea
+            label="수강동기"
+            maxLength={FORM_LIMITS.motivationMaxLength}
+            {...register('applicant.motivation')}
+            error={errors.applicant?.motivation?.message as string | undefined}
+          />
+        </div>
+      </div>
     </section>
   );
 }
