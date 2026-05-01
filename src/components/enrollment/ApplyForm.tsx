@@ -10,12 +10,11 @@ import GroupFields from '@/components/enrollment/GroupFields';
 import ParticipantFields from '@/components/enrollment/ParticipantFields';
 import TermsAgreement from '@/components/enrollment/TermsAgreement';
 import Button from '@/components/ui/Button';
+import { ENROLLMENT_DRAFT_STORAGE_KEY } from '@/constants';
 import { useBeforeUnload } from '@/hooks/useBeforeUnload';
 import { useEnrollForm } from '@/hooks/useEnrollForm';
 import { useFormPersist } from '@/hooks/useFormPersist';
 import type { EnrollmentSchema } from '@/lib/schema';
-
-const ENROLLMENT_DRAFT_STORAGE_KEY = 'course-enrollment:draft';
 
 type ApplyFormProps = {
   courseId: string;

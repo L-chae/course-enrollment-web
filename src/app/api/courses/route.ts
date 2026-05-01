@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { COURSE_CATEGORIES, COURSES_PER_PAGE } from '@/constants';
 import { MOCK_COURSES } from '@/mocks/courses';
 import type { CourseListResponse } from '@/types/course';
 
@@ -9,7 +10,7 @@ export async function GET(request: Request) {
   // 1. 필터링 파라미터
   const category = searchParams.get('category');
   const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '6'); // 한 페이지당 6개
+  const limit = parseInt(searchParams.get('limit') || String(COURSES_PER_PAGE)); // 한 페이지당 6개
 
   // 2. 카테고리 필터링
   const normalizedCategory = category?.toLowerCase();
@@ -28,7 +29,7 @@ export async function GET(request: Request) {
 
   const response: CourseListResponse = {
     courses: paginatedCourses,
-    categories: ['development', 'design', 'marketing', 'business'],
+    categories: COURSE_CATEGORIES,
     pagination: {
       currentPage: page,
       totalPages,

@@ -5,11 +5,9 @@ import { useRouter } from 'next/navigation';
 
 import ConfirmSummary from '@/components/enrollment/ConfirmSummary';
 import Button from '@/components/ui/Button';
+import { ENROLLMENT_DRAFT_STORAGE_KEY, ENROLLMENT_RESULT_STORAGE_KEY } from '@/constants';
 import { useEnrollSubmit } from '@/hooks/useEnrollSubmit';
 import type { EnrollmentRequest } from '@/types/enrollment';
-
-const ENROLLMENT_DRAFT_STORAGE_KEY = 'course-enrollment:draft';
-const ENROLLMENT_RESULT_STORAGE_KEY = 'course-enrollment:result';
 
 export default function ConfirmPage() {
   const router = useRouter();
